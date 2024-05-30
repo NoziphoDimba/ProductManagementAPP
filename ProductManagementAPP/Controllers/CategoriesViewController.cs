@@ -1,17 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using ProductManagementAPP.Models;
+using ProductManagementAPP.Services;
 
 namespace ProductManagementAPP.Controllers
 {
     public class CategoriesViewController : Controller
     {
-        public IActionResult Index()
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CategoriesViewController( UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
+        public IActionResult AllCategories()
         {
             return View();
         }
 
-        public IActionResult Create()
+        [HttpGet("Create")]
+        public async Task<IActionResult> CreateCategory()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var userName = user?.UserName ?? "Guest";
+            return Ok(new { UserName = userName });
         }
 
         public IActionResult Edit(int id)

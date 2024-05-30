@@ -137,7 +137,7 @@ namespace ProductManagementAPP.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategories()
+        public async Task<IActionResult> Categories()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

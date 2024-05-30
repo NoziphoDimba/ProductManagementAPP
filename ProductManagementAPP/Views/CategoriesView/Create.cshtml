@@ -127,11 +127,11 @@
                                             <div class="text-center">
                                                 <h1 class="h4 text-gray-900 mb-4">Add a New Category</h1>
                                             </div>
-                                            <form class="ui large form" id="categoryForm" asp-controller="Categories" asp-action="Create" method="post">
+                                            <form class="ui large form" id="categoryForm" asp-controller="CategoriesView" asp-action="Create" method="post">
                                                 <!-- Hidden input field for createdBy -->
                                                 <input type="hidden" id="createdBy" name="CreatedBy" value="@userName" />
 
-                                  
+
                                                 <!-- Category Name -->
                                                 <div class="form-group">
                                                     <div class="input-group">
@@ -318,8 +318,10 @@
                         </div>
                         <!-- End Success Modal -->
                         <!-- Script to show success modal -->
-                      
                     }
+
+
+
                     <div id="successDeleteModal" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -355,7 +357,7 @@
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-       
+
     }
 </body>
 </html>

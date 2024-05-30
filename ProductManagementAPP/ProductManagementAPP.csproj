@@ -30,4 +30,9 @@
     <Folder Include="wwwroot\images\uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\pages\categories\AllCategories.html" />
+    <None Include="wwwroot\pages\categories\AddCategory.html" />
+  </ItemGroup>
+
 </Project>
