@@ -41,8 +41,6 @@ namespace ProductManagementAPP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -62,7 +60,7 @@ namespace ProductManagementAPP.Controllers
                     };
 
                     await _categoriesService.AddCategoryAsync(category, userId, userName);
-                    TempData["SuccessMessage"] = "Category added successfully.";
+                   
                     return Json(new { success = true, message = "Category added successfully." });
                 }
                 catch (Exception ex)
@@ -74,6 +72,7 @@ namespace ProductManagementAPP.Controllers
             return Json(new { success = false, message = "Model state is invalid." });
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _categoriesService.GetCategoryByIdAsync(id);
@@ -81,43 +80,78 @@ namespace ProductManagementAPP.Controllers
             {
                 return NotFound();
             }
-            return View(category);
+            var viewModel = new CategoryViewModel
+            {
+                Name = category.Name,
+                CategoryCode = category.CategoryCode,
+                IsActive = category.IsActive,
+                
+            };
+            return View(viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(CategoryViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var category = await _categoriesService.GetCategoryByIdAsync(viewModel.CategoryId);
+                    if (category == null)
+                    {
+                        return NotFound();
+                    }
+
+                    category.Name = viewModel.Name;
+                    category.CategoryCode = viewModel.CategoryCode;
+                    category.IsActive = viewModel.IsActive;
+
+                    await _categoriesService.UpdateCategoryAsync(category);
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, message = "Invalid data" });
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Category category)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id != category.CategoryId)
+            try
             {
-                return BadRequest();
+                await _categoriesService.DeleteCategoryAsync(id);
+                return Json(new { success = true });
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                await _categoriesService.UpdateCategoryAsync(category);
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = false, message = ex.Message });
             }
-            return View(category);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
             var category = await _categoriesService.GetCategoryByIdAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
-            return View(category);
+
+            var categoryViewModel = new CategoryViewModel
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                CategoryCode = category.CategoryCode,
+                IsActive = category.IsActive
+            };
+
+            return Json(categoryViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _categoriesService.DeleteCategoryAsync(id);
-            return RedirectToAction(nameof(Index));
-        }
+
     }
 }
 

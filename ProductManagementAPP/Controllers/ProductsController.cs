@@ -53,7 +53,7 @@ namespace ProductManagementAPP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] ProductViewModel productViewModel, IFormFile image)
+        public async Task<IActionResult> Create([FromForm] ProductViewModel productViewModel, IFormFile? image)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +66,7 @@ namespace ProductManagementAPP.Controllers
                     var userName = user.UserName;
                     ViewData["UserName"] = userName;
 
-                    // Convert ProductViewModel to Product
+                  
                     var product = new Product
                     {
                         Name = productViewModel.Name,
@@ -74,11 +74,12 @@ namespace ProductManagementAPP.Controllers
                         CategoryName = productViewModel.CategoryName,
                         Price = productViewModel.Price,
                         DateCreated = DateTime.Now,
+                        UserId = user.Id,
                         CreatedBy = productViewModel.CreatedBy,
                         CategoryId = productViewModel.CategoryId
                     };
 
-                    // Manually set the Category object
+                   
                     product.Category = await _categoriesService.GetCategoryByIdAsync(product.CategoryId);
 
                     if (image != null && image.Length > 0)
@@ -93,7 +94,8 @@ namespace ProductManagementAPP.Controllers
                     }
 
                     await _productsService.AddProductAsync(product);
-                    return RedirectToAction("Products", "Products");
+                   
+                    return Json(new { success = true, message = "Success" });
                 }
                 catch (Exception ex)
                 {
@@ -187,100 +189,59 @@ namespace ProductManagementAPP.Controllers
             return View(productViewModel);
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> GetCategory(int id)
         {
-            var product = await _productsService.GetProductByIdAsync(id);
-            if (product == null)
+            var category = await _categoriesService.GetCategoryByIdAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            var productViewModel = new ProductViewModel
+            var categoryViewModel = new CategoryViewModel
             {
-                Name = product.Name,
-                Description = product.Description,
-                CategoryName = product.CategoryName,
-                Price = product.Price,
-                Image = product.Image,
-                DateCreated = product.DateCreated,
-                CreatedBy = product.CreatedBy,
-                CategoryId = product.CategoryId
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                CategoryCode = category.CategoryCode,
+                IsActive = category.IsActive
             };
 
-            return View(productViewModel);
+            return Json(categoryViewModel);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel(IFormFile excelFile, int productId)
         {
-            await _productsService.DeleteProductAsync(id);
-            return RedirectToAction(nameof(Index));
-        }
-    
-
-    [HttpPost]
-        public async Task<IActionResult> UploadProducts(IFormFile file)
-        {
-            if (file != null && file.Length > 0)
+            if (excelFile == null || excelFile.Length == 0)
             {
-                using (var stream = new MemoryStream())
-                {
-                    await file.CopyToAsync(stream);
-                    using (var package = new ExcelPackage(stream))
-                    {
-                        var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-                        if (worksheet != null)
-                        {
-                            for (int row = 2; worksheet.Cells[row, 1].Value != null; row++)
-                            {
-                                var product = new Product
-                                {
-                                    ProductCode = worksheet.Cells[row, 1].Text,
-                                    Name = worksheet.Cells[row, 2].Text,
-                                    Description = worksheet.Cells[row, 3].Text,
-                                    CategoryId = int.Parse(worksheet.Cells[row, 4].Text),
-                                    Price = decimal.Parse(worksheet.Cells[row, 5].Text)
-                                };
-                                await _productsService.AddProductAsync(product);
-                            }
-                        }
-                    }
-                }
+                return BadRequest("Invalid file");
             }
 
-            return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> DownloadProducts()
-        {
-            var products = await _productsService.GetAllProductsAsync(1, int.MaxValue);
-
-            using (var package = new ExcelPackage())
+            using (var stream = new MemoryStream())
             {
-                var worksheet = package.Workbook.Worksheets.Add("Products");
-
-                worksheet.Cells[1, 1].Value = "Product Code";
-                worksheet.Cells[1, 2].Value = "Name";
-                worksheet.Cells[1, 3].Value = "Description";
-                worksheet.Cells[1, 4].Value = "Category";
-                worksheet.Cells[1, 5].Value = "Price";
-
-                for (int i = 0; i < products.Count; i++)
+                await excelFile.CopyToAsync(stream);
+                var result = await _productsService.ProcessExcelFileAsync(stream, productId);
+                if (result)
                 {
-                    worksheet.Cells[i + 2, 1].Value = products[i].ProductCode;
-                    worksheet.Cells[i + 2, 2].Value = products[i].Name;
-                    worksheet.Cells[i + 2, 3].Value = products[i].Description;
-                    worksheet.Cells[i + 2, 4].Value = products[i].Category.Name;
-                    worksheet.Cells[i + 2, 5].Value = products[i].Price;
+                    TempData["SuccessMessage"] = "Products uploaded successfully.";
+                    return Ok();
                 }
-
-                var fileName = "Products.xlsx";
-                var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                var fileContents = package.GetAsByteArray();
-
-                return File(fileContents, contentType, fileName);
+                else
+                {
+                    return StatusCode(500, "An error occurred while processing the file.");
+                }
             }
         }
+
+        public async Task<IActionResult> DownloadExcel(int productId)
+        {
+            var fileContent = await _productsService.GenerateExcelFileAsync(productId);
+            if (fileContent == null || fileContent.Length == 0)
+            {
+                return NotFound();
+            }
+
+            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx");
+        }
+
     }
 }

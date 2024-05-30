@@ -21,9 +21,15 @@
             data: formData,
             contentType: false,
             processData: false,
-            success: function () {
-                $('#successModal').modal('show');
-                window.location.href = '/Categories/Categories';
+           
+            success: function (response) {
+                if (response.success) {
+
+                    $('#successModal').modal('show');
+                    window.location.href = '/Products/Products';
+                } else {
+                    alert(response.message);
+                }
             },
             error: function (error) {
                 alert('Error adding product');
@@ -31,61 +37,105 @@
             }
         });
     });
+
+    $('#uploadExcelForm').on('submit', function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Products/UploadExcel',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function () {
+                $('#uploadExcelModal').modal('hide');
+                $('#successModal').modal('show');
+            },
+            error: function (error) {
+                alert('Error uploading Excel file');
+                console.log(error);
+            }
+        });
+    });
+
+    function openEditModal(event, productId) {
+        event.preventDefault();
+        $.ajax({
+            type: 'GET',
+            url: '/Products/GetProduct/' + productId,
+            success: function (data) {
+                $('#editProductId').val(data.ProductId);
+                $('#editProductName').val(data.Name);
+                $('#editCategoryId').val(data.CategoryId);
+                // Populate category dropdown dynamically here if needed
+                $('#editProductModal').modal('show');
+            },
+            error: function (error) {
+                alert('Error loading product details');
+                console.log(error);
+            }
+        });
+    }
+
+    function openDeleteModal(event, productId) {
+        event.preventDefault();
+        $('#deleteProductModal').data('productId', productId).modal('show');
+    }
+
+    $('#editProductForm').on('submit', function (event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: '/Products/Edit',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editProductModal').modal('hide');
+                    $('#successModal').modal('show');
+                } else {
+                    alert('Error updating product: ' + response.message);
+                }
+            },
+            error: function (error) {
+                alert('Error updating product');
+                console.log(error);
+            }
+        });
+    });
+
+$('.btn-edit-product').on('click', function (event) {
+    var productId = $(this).data('product-id');
+    openEditModal(event, productId);
 });
 
-function openEditProductModal(productId) {
-    $.ajax({
-        url: '/Products/GetProduct/' + productId,
-        type: 'GET',
-        success: function (product) {
-            $('#editProductId').val(product.productId);
-            $('#editProductName').val(product.productName);
-            $('#editCategoryId').val(product.categoryId);
-            $('#editExistingImage').val(product.image);
-            $('#editImagePreview').attr('src', '/images/uploads/' + product.image).show();
-            $('#editProductModal').modal('show');
-        },
-        error: function (error) {
-            alert('Error fetching product details');
-            console.log(error);
-        }
-    });
-}
+    $('.btn-delete-product').on('click', function (event) {
+    var productId = $(this).data('product-id');
+    openDeleteModal(event, productId);
+});
 
-function submitEditProductForm() {
-    var formData = new FormData($('#editProductForm')[0]);
+});
 
-    $.ajax({
-        url: '/Products/Edit',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function () {
-            $('#editProductModal').modal('hide');
-            location.reload();
-        },
-        error: function (error) {
-            alert('Error updating product');
-            console.log(error);
-        }
-    });
-}
-
-var deleteProductId;
-
-function openDeleteProductModal(productId) {
-    deleteProductId = productId;
-    $('#deleteProductModal').modal('show');
+function openUploadModal(event, productId) {
+    event.preventDefault();
+    $('#productId').val(productId);
+    $('#uploadExcelModal').modal('show');
 }
 
 function deleteProduct() {
+    var productId = $('#deleteProductModal').data('productId');
     $.ajax({
-        url: '/Products/Delete/' + deleteProductId,
         type: 'POST',
-        success: function () {
-            $('#deleteProductModal').modal('hide');
-            $('#successDeleteModal').modal('show');
+        url: '/Products/Delete/' + productId,
+        success: function (response) {
+            if (response.success) {
+                $('#deleteProductModal').modal('hide');
+                $('#successDeleteModal').modal('show');
+            } else {
+                alert('Error deleting product: ' + response.message);
+            }
         },
         error: function (error) {
             alert('Error deleting product');

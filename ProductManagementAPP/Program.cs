@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using ProductManagementAPP.Models;
 using ProductManagementAPP.SeedData;
 using ProductManagementAPP.Services;
@@ -12,10 +13,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // Add services to the container.
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
-
 builder.Services.AddDbContext<ProductsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MasterDatabase"), sqlServerOptionsAction: sqlOptions =>
     {
@@ -38,7 +35,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
-
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var app = builder.Build();
 
@@ -68,7 +65,11 @@ app.UseEndpoints(endpoints =>
         context.Response.Redirect("/Identity/Account/Login");
         return Task.CompletedTask;
     });
-
+    endpoints.MapControllerRoute(
+       name: "productDownloadExcel",
+       pattern: "Products/DownloadExcel/{productId}",
+       defaults: new { controller = "Products", action = "DownloadExcel" }
+   );
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");

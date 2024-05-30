@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using ProductManagementAPP.Models;
 
 namespace ProductManagementAPP.Services
@@ -14,6 +15,8 @@ namespace ProductManagementAPP.Services
         Task<Product> AddProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
         Task<bool> DeleteProductAsync(int productId);
+        Task<bool> ProcessExcelFileAsync(Stream fileStream, int productId);
+        Task<byte[]> GenerateExcelFileAsync(int productId);
     }
 
     public class ProductsService : IProductsService
@@ -93,5 +96,70 @@ namespace ProductManagementAPP.Services
 
             return $"{DateTime.Now:yyyyMM}-{nextNumber:000}";
         }
+
+        public async Task<bool> ProcessExcelFileAsync(Stream fileStream, int productId)
+        {
+            try
+            {
+                using (var package = new ExcelPackage(fileStream))
+                {
+                    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (worksheet == null) return false;
+
+                    var rowCount = worksheet.Dimension.Rows;
+                    var products = new List<Product>();
+
+                    for (int row = 2; row <= rowCount; row++) // Assuming the first row is the header
+                    {
+                        var product = new Product
+                        {
+                            ProductCode = worksheet.Cells[row, 1].Text,
+                            Name = worksheet.Cells[row, 2].Text,
+                            Description = worksheet.Cells[row, 3].Text,
+                            CategoryId = productId, // Assuming CategoryId is passed
+                            Price = decimal.Parse(worksheet.Cells[row, 4].Text),
+                            Image = worksheet.Cells[row, 5].Text
+                        };
+                        products.Add(product);
+                    }
+
+                    await _context.Products.AddRangeAsync(products);
+                    await _context.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<byte[]> GenerateExcelFileAsync(int productId)
+        {
+            var products = await _context.Products.Where(p => p.CategoryId == productId).ToListAsync();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Products");
+
+                worksheet.Cells[1, 1].Value = "Product Code";
+                worksheet.Cells[1, 2].Value = "Name";
+                worksheet.Cells[1, 3].Value = "Description";
+                worksheet.Cells[1, 4].Value = "Price";
+                worksheet.Cells[1, 5].Value = "Image";
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = products[i].ProductCode;
+                    worksheet.Cells[i + 2, 2].Value = products[i].Name;
+                    worksheet.Cells[i + 2, 3].Value = products[i].Description;
+                    worksheet.Cells[i + 2, 4].Value = products[i].Price;
+                    worksheet.Cells[i + 2, 5].Value = products[i].Image;
+                }
+
+                return package.GetAsByteArray();
+            }
+        }
+
     }
 }
