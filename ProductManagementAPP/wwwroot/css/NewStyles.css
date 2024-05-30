@@ -1,0 +1,41 @@
+﻿body {
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-right: none;
+    padding: 0.375rem 0.75rem;
+}
+
+.form-control {
+    flex: 1;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+}
+
+.error-message {
+    display: none;
+    color: red;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.form-control:invalid + .error-message {
+    display: block;
+}
+
+img#logoPreview {
+    max-width: 50%;
+    height: auto;
+    display: none;
+    margin-top: 1rem;
+}

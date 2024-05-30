@@ -1,0 +1,206 @@
+﻿*,
+html,
+body {
+    font-family: "Open Sans";
+ 
+}
+#tenantDropdownItems {
+    max-height: 300px; 
+    overflow-y: auto;
+}
+
+.centered-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: left;
+    height: 100vh;  
+  
+}
+
+.form-container {
+    width: 100%; 
+    max-width: 600px; 
+}
+
+.bg-gradient-login {
+    background: #f2f0eb; 
+    color: #5d5c59; 
+}
+
+.card {
+    opacity: 0.95;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #507dbc; 
+    border: none;
+    color: #fff; 
+}
+
+    .btn-primary:hover {
+        background-color: #4068a3; 
+    }
+
+.input-group-text {
+    background-color: #a9a5a1; 
+    border: none;
+    color: #fff;
+}
+
+
+.flexin {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px; 
+}
+
+    .flexin div.tabs-style-flip {
+        max-width: 600px;
+        box-shadow: 0px 50px 100px 0px rgba(30, 30, 30, .4);
+        border-radius: 6px;
+        height: auto;
+        flex-grow: 2;
+    }
+
+.tabs {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100%;
+    font-weight: 400;
+}
+
+    /* Nav */
+    .tabs nav {
+        text-align: center;
+    }
+
+        .tabs nav ul {
+            position: relative;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: -moz-flex;
+            display: -ms-flex;
+            display: flex;
+            margin: 0 auto;
+            padding: 0;
+            max-width: 1400px;
+            list-style: none;
+            -ms-box-orient: horizontal;
+            -ms-box-pack: center;
+            -webkit-flex-flow: row wrap;
+            -moz-flex-flow: row wrap;
+            -ms-flex-flow: row wrap;
+            flex-flow: row wrap;
+            -webkit-justify-content: center;
+            -moz-justify-content: center;
+            -ms-justify-content: center;
+            justify-content: center;
+        }
+
+            .tabs nav ul li {
+                position: relative;
+                z-index: 1;
+                display: block;
+                margin: 0;
+                text-align: center;
+                -webkit-flex: 1;
+                -moz-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+            }
+
+        .tabs nav a {
+            position: relative;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 2.5;
+            font-size: 1.5em;
+        }
+
+            .tabs nav a span {
+                vertical-align: middle;
+            }
+
+        .tabs nav li.tab-current a {
+            color: #303030;
+        }
+
+        .tabs nav a:focus {
+            outline: none;
+        }
+
+/* Icons */
+.icon::before {
+    z-index: 10;
+    display: inline-block;
+    margin: 0 0.4em 0 0;
+    vertical-align: middle;
+    text-transform: none;
+    font-weight: normal;
+    font-variant: normal;
+    line-height: 1;
+    speak: none;
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Content */
+.content-wrap {
+    position: relative;
+}
+
+    .content-wrap section {
+        display: none;
+        margin: 0 auto;
+        padding: 1em;
+        max-width: 1200px;
+        text-align: center;
+    }
+
+        .content-wrap section.content-current {
+            display: block;
+        }
+
+        .content-wrap section p {
+            margin: 0;
+            padding: 0.75em 0;
+            color: rgba(40, 44, 42, 0.05);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+/* Fallback */
+.no-js .content-wrap section {
+    display: block;
+    padding-bottom: 2em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.no-flexbox nav ul {
+    display: block;
+}
+
+    .no-flexbox nav ul li {
+        min-width: 15%;
+        display: inline-block;
+    }
+
+@media screen and (max-width: 58em) {
+    .tabs nav a.icon span {
+        display: none;
+    }
+
+    .tabs nav a:before {
+        margin-right: 0;
+    }
+}
+
+
