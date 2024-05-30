@@ -105,6 +105,47 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        //public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        //{
+        //    returnUrl ??= Url.Content("~/");
+
+        //    ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        //        var user = await _userManager.Users
+        //            .FirstOrDefaultAsync(u => u.Email == Input.Email);
+        //        if (result.Succeeded)
+        //        {
+        //            if (user != null)
+        //            {
+        //                if (await _userManager.IsInRoleAsync(user, "User"))
+        //                {
+        //                    return LocalRedirect("/Categories/Categories");
+        //                }
+        //            }
+        //                _logger.LogInformation("User logged in.");
+        //            return LocalRedirect(returnUrl);
+        //        }
+        //        if (result.RequiresTwoFactor)
+        //        {
+        //            return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+        //        }
+        //        if (result.IsLockedOut)
+        //        {
+        //            _logger.LogWarning("User account locked out.");
+        //            return RedirectToPage("./Lockout");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        //            return Page();
+        //        }
+        //    }
+        //    return Page();
+        //}
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -114,8 +155,8 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                var user = await _userManager.Users
-                    .FirstOrDefaultAsync(u => u.Email == Input.Email);
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == Input.Email);
+
                 if (result.Succeeded)
                 {
                     if (user != null)
@@ -125,25 +166,30 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
                             return LocalRedirect("/Categories/Categories");
                         }
                     }
-                        _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        // If login fails, set a TempData message to indicate incorrect email or password
+                        TempData["ErrorMessage"] = "Incorrect email or password.";
+                        return Page();
+                    }
                 }
             }
             return Page();
         }
+
     }
 }
