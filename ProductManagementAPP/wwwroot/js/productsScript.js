@@ -23,6 +23,7 @@
             processData: false,
             success: function () {
                 $('#successModal').modal('show');
+                window.location.href = '/Categories/Categories';
             },
             error: function (error) {
                 alert('Error adding product');
@@ -33,12 +34,10 @@
 });
 
 function openEditProductModal(productId) {
-    // Fetch product details using AJAX
     $.ajax({
         url: '/Products/GetProduct/' + productId,
         type: 'GET',
         success: function (product) {
-            // Populate the form with product details
             $('#editProductId').val(product.productId);
             $('#editProductName').val(product.productName);
             $('#editCategoryId').val(product.categoryId);

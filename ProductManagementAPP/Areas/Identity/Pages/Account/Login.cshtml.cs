@@ -123,7 +123,7 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
                     {
                         if (await _userManager.IsInRoleAsync(user, "User"))
                         {
-                            return LocalRedirect("/pages/categories/AllCategories.html");
+                            return LocalRedirect("~/Categories/Categories");
                         }
                     }
                     _logger.LogInformation("User logged in.");
@@ -142,7 +142,6 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        // If login fails, set a TempData message to indicate incorrect email or password
                         TempData["ErrorMessage"] = "Incorrect email or password.";
                         return Page();
                     }

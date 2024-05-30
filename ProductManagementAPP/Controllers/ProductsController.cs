@@ -8,6 +8,7 @@ using ProductManagementAPP.Services;
 using ProductManagementAPP.Models;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Identity;
+using ProductManagementAPP.ViewModels;
 
 namespace ProductManagementAPP.Controllers
 {
@@ -170,7 +171,7 @@ namespace ProductManagementAPP.Controllers
                     }
                     else
                     {
-                        product.Image = productViewModel.Image; // Preserve existing image
+                        product.Image = productViewModel.Image; 
                     }
 
                     await _productsService.UpdateProductAsync(product);

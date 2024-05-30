@@ -1,8 +1,8 @@
-﻿namespace ProductManagementAPP
+﻿namespace ProductManagementAPP.ViewModels
 {
     public class ProductViewModel
     {
-       // public string ProductCode { get; set; }
+        // public string ProductCode { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
         public string CategoryName { get; set; }

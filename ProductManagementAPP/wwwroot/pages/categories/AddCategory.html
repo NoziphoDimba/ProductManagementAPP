@@ -24,7 +24,7 @@
 
             <hr class="sidebar-divider">
             <li class="nav-item">
-                <a class="nav-link" href="~/Products/Products">
+                <a class="nav-link" href="/Products/Products">
                     <i class="fas fa-store"></i>
                     <span>Products</span>
                 </a>
@@ -104,7 +104,7 @@
                                             <div class="text-center">
                                                 <h1 class="h4 text-gray-900 mb-4">Add a New Category</h1>
                                             </div>
-                                            <form class="ui large form" id="categoryForm" asp-controller="Categories" asp-action="Create" method="post">
+                                            <form class="ui large form" id="categoryForm">
                                                 <!-- Hidden input field for createdBy -->
                                                 <input type="hidden" id="createdBy" name="CreatedBy" value="@userName" />
 
@@ -145,7 +145,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <button type="submit" class="btn btn-primary btn-block">Add Category</button>
+                                                    <button type="submit" class="btn btn-primary btn-block" onclick="submitCategoryForm()">Add Category</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -155,41 +155,6 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="editCategoryForm">
-                                    <div class="modal-body">
-                                        <input type="hidden" id="editCategoryId">
-                                        <div class="form-group">
-                                            <label for="editCategoryName">Name</label>
-                                            <input type="text" class="form-control" id="editCategoryName" name="name" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="editCategoryCode">Code</label>
-                                            <input type="text" class="form-control" id="editCategoryCode" name="categoryCode" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="editIsActive">Active</label>
-                                            <input type="checkbox" id="editIsActive" name="isActive">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Delete Modal -->
                     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -213,9 +178,6 @@
                         </div>
                     </div>
 
-
-
-                    <!-- Modal Logout -->
                     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
                          aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -231,7 +193,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                                    <a href="@Url.Action(" Logout", "Home" )" class="btn btn-primary">Logout</a>
+                                    <a href="/Home/Logout" class="btn btn-primary">Logout</a>
 
                                 </div>
                             </div>
@@ -248,7 +210,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                   
+                                    <p>Category added successfully!</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -257,28 +219,7 @@
                         </div>
                     </div>
                 
-                    <div id="successDeleteModal" class="modal fade" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Success</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Customer deleted successfully.
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
+                  
                 </div>
             </div>
         </div>
@@ -292,8 +233,6 @@
     <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="../../js/ruang-admin.min.js"></script>
-    <script src="../../vendor/chart.js/chart.js"></script>
-    <script src="../../js/demo/chart-area-demo.js"></script>
     <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>

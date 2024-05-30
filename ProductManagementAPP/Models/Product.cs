@@ -18,7 +18,7 @@ namespace ProductManagementAPP.Models
         public string CreatedBy { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        public string UserId { get; set; } // Foreign key for ApplicationUser
+        public string UserId { get; set; } 
         public ApplicationUser User { get; set; }
     }
 }

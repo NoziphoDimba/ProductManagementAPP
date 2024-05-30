@@ -11,7 +11,7 @@ namespace ProductManagementAPP.Services
     {
         Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
-        Task AddCategoryAsync(Category category, string createdBy);
+        Task AddCategoryAsync(Category category, string userId, string createdBy);
         Task UpdateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int id);
     }
@@ -35,9 +35,10 @@ namespace ProductManagementAPP.Services
             return await _context.Categories.FindAsync(id);
         }
 
-        public async Task AddCategoryAsync(Category category, string createdBy)
+        public async Task AddCategoryAsync(Category category, string userId, string createdBy)
         {
             category.CreatedBy = createdBy;
+            category.UserId = userId; // Save the user ID
             category.DateCreated = DateTime.Now;
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
