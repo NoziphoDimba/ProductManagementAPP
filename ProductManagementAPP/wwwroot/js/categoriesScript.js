@@ -52,7 +52,7 @@
 });
 
 function openEditModal(event, categoryId) {
-    debugger;
+    
     event.preventDefault();
 
     $.ajax({
@@ -81,7 +81,7 @@ function openEditModal(event, categoryId) {
 }
 
 function openDeleteModal(event, categoryId) {
-    debugger;
+  
     event.preventDefault();
     $('#deleteModal').data('categoryId', categoryId).modal('show');
 }

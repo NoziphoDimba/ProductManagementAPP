@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $('#productForm').on('submit', function (event) {
-        debugger;
+       
         event.preventDefault();
 
         var categoryName = $('#CategoryId option:selected').text();
@@ -36,7 +36,7 @@
     });
 
     $('#editProductForm').on('submit', function (event) {
-        debugger;
+        
         event.preventDefault();
         var formData = $(this).serialize();
 
