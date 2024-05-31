@@ -201,6 +201,14 @@ namespace ProductManagementAPP.Controllers
                     return Json(new { success = false, message = $"An error occurred while updating the product: {ex.Message}" });
                 }
             }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+            }
             return Json(new { success = false, message = "Invalid model state. Please check your inputs." });
         }
 

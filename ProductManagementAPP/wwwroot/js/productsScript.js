@@ -34,31 +34,31 @@
             }
         });
     });
-});
 
+    $('#editProductForm').on('submit', function (event) {
+        debugger;
+        event.preventDefault();
+        var formData = $(this).serialize();
 
-function submitEditProductForm() {
-    var formData = new FormData($('#editProductForm')[0]);
-    $.ajax({
-        type: 'POST',
-        url: '/Products/Edit',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.success) {
-                $('#editProductModal').modal('hide');
-                $('#successModal').modal('show');
-            } else {
-                alert('Error updating product: ' + response.message);
+        $.ajax({
+            type: 'POST',
+            url: '/Products/Edit',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editProductModal').modal('hide');
+                    $('#successModal').modal('show');
+                } else {
+                    alert('Error updating product: ' + response.message);
+                }
+            },
+            error: function (error) {
+                alert('Error updating product');
+                console.log(error);
             }
-        },
-        error: function (error) {
-            alert('Error updating product');
-            console.log(error);
-        }
+        });
     });
-}
+});
 
 function openEditModal(event, productId) {
   

@@ -224,7 +224,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="editProductForm" method="post" enctype="multipart/form-data">
+                                    <form id="editProductForm">
                                         <input type="hidden" name="ProductId" id="editProductId" value="">
 
                                         <div class="form-group">
@@ -232,7 +232,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                                 </div>
-                                                <input type="text" class="form-control" name="ProductName" id="editProductName" placeholder="Product Name" required>
+                                                <input type="text" class="form-control" name="Name" id="editProductName" placeholder="Product Name" required>
                                             </div>
                                             <span class="error-message">Product Name is required.</span>
                                         </div>
@@ -260,12 +260,10 @@
                                             <img id="editImagePreview" src="" alt="Image Preview" style="max-width: 50%; height: auto; display: none;">
                                             <input type="hidden" id="editExistingImage" name="ExistingImage">
                                         </div>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
                                     </form>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="submitEditProductForm()">Save Changes</button>
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
