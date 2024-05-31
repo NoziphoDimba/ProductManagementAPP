@@ -10,7 +10,7 @@
 </head>
 <body id="page-top">
     <div id="wrapper">
-        <!-- Sidebar -->
+      
         <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/Products/Products">
                 <div class="sidebar-brand-icon">
@@ -23,7 +23,7 @@
             </a>
             <hr class="sidebar-divider my-0">
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -78,7 +78,6 @@
                             </div>
                         </li>
 
-                        
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="img-profile rounded-circle" src="~/images/boy.png" style="max-width: 60px">
@@ -229,7 +228,6 @@
                                     <form id="editProductForm" method="post" enctype="multipart/form-data">
                                         <input type="hidden" name="ProductId" id="editProductId" value="">
 
-                                        <!-- Product Name -->
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -240,20 +238,18 @@
                                             <span class="error-message">Product Name is required.</span>
                                         </div>
 
-                                        <!-- Category -->
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-list"></i></span>
                                                 </div>
                                                 <select class="form-control" name="CategoryId" id="editCategoryId" required>
-                                                    <!-- Options will be populated dynamically -->
+                                                  
                                                 </select>
                                             </div>
                                             <span class="error-message">Category is required.</span>
                                         </div>
 
-                                        <!-- Image Upload -->
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -261,7 +257,7 @@
                                                 </div>
                                                 <input type="file" class="form-control" name="Image" id="editImage" accept="image/*" onchange="previewImage(this, '#editImagePreview')">
                                             </div>
-                                            <!-- Image preview container -->
+                                         
                                             <img id="editImagePreview" src="" alt="Image Preview" style="max-width: 50%; height: auto; display: none;">
                                             <input type="hidden" id="editExistingImage" name="ExistingImage">
                                         </div>

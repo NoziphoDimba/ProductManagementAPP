@@ -110,14 +110,14 @@ namespace ProductManagementAPP.Services
                     var rowCount = worksheet.Dimension.Rows;
                     var products = new List<Product>();
 
-                    for (int row = 2; row <= rowCount; row++) // Assuming the first row is the header
+                    for (int row = 2; row <= rowCount; row++) 
                     {
                         var product = new Product
                         {
                             ProductCode = worksheet.Cells[row, 1].Text,
                             Name = worksheet.Cells[row, 2].Text,
                             Description = worksheet.Cells[row, 3].Text,
-                            CategoryId = productId, // Assuming CategoryId is passed
+                            CategoryId = productId, 
                             Price = decimal.Parse(worksheet.Cells[row, 4].Text),
                             Image = worksheet.Cells[row, 5].Text
                         };

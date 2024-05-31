@@ -21,7 +21,6 @@ builder.Services.AddDbContext<ProductsDbContext>(options =>
 
 builder.Services.AddHttpClient();
 
-// Register other services like UserManager and ITenantDbContextFactory
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ProductsDbContext>();

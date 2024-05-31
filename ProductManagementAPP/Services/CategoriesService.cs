@@ -41,7 +41,7 @@ namespace ProductManagementAPP.Services
         public async Task AddCategoryAsync(Category category, string userId, string createdBy)
         {
             category.CreatedBy = createdBy;
-            category.UserId = userId; // Save the user ID
+            category.UserId = userId; 
             category.DateCreated = DateTime.Now;
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();

@@ -44,7 +44,7 @@
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <!-- TopBar -->
+              
                 <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
                     <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
@@ -119,11 +119,9 @@
                                                 <h1 class="h4 text-gray-900 mb-4">Add a New Category</h1>
                                             </div>
                                             <form class="ui large form" id="categoryForm" asp-controller="Categories" asp-action="Create" method="post">
-                                                <!-- Hidden input field for createdBy -->
+                                              
                                                 <input type="hidden" id="createdBy" name="CreatedBy" value="@userName" />
 
-                                  
-                                                <!-- Category Name -->
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
@@ -134,7 +132,6 @@
                                                     <span class="error-message">Category Name is required.</span>
                                                 </div>
 
-                                                <!-- Category Code -->
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
@@ -145,7 +142,6 @@
                                                     <span class="error-message">Category Code must be in the format ABC123.</span>
                                                 </div>
 
-                                                <!-- IsActive -->
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
@@ -213,8 +209,6 @@
                             </div>
                         </div>
                     
-
-                   
                 </div>
             </div>
 
