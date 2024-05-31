@@ -59,30 +59,6 @@
         });
     });
 
-    function openEditModal(event, productId) {
-        event.preventDefault();
-        $.ajax({
-            type: 'GET',
-            url: '/Products/GetProduct/' + productId,
-            success: function (data) {
-                $('#editProductId').val(data.ProductId);
-                $('#editProductName').val(data.Name);
-                $('#editCategoryId').val(data.CategoryId);
-                // Populate category dropdown dynamically here if needed
-                $('#editProductModal').modal('show');
-            },
-            error: function (error) {
-                alert('Error loading product details');
-                console.log(error);
-            }
-        });
-    }
-
-    function openDeleteModal(event, productId) {
-        event.preventDefault();
-        $('#deleteProductModal').data('productId', productId).modal('show');
-    }
-
     $('#editProductForm').on('submit', function (event) {
         event.preventDefault();
         var formData = $(this).serialize();
@@ -106,12 +82,12 @@
         });
     });
 
-$('.btn-edit-product').on('click', function (event) {
+    $('.btn-edit-product').on('click', function (event) {
     var productId = $(this).data('product-id');
     openEditModal(event, productId);
 });
 
-    $('.btn-delete-product').on('click', function (event) {
+   $('.btn-delete-product').on('click', function (event) {
     var productId = $(this).data('product-id');
     openDeleteModal(event, productId);
 });
@@ -142,4 +118,28 @@ function deleteProduct() {
             console.log(error);
         }
     });
+}
+
+function openEditModal(event, productId) {
+    event.preventDefault();
+    $.ajax({
+        type: 'GET',
+        url: '/Products/GetProduct/' + productId,
+        success: function (data) {
+            $('#editProductId').val(data.ProductId);
+            $('#editProductName').val(data.Name);
+            $('#editCategoryId').val(data.CategoryId);
+            // Populate category dropdown dynamically here if needed
+            $('#editProductModal').modal('show');
+        },
+        error: function (error) {
+            alert('Error loading product details');
+            console.log(error);
+        }
+    });
+}
+
+function openDeleteModal(event, productId) {
+    event.preventDefault();
+    $('#deleteProductModal').data('productId', productId).modal('show');
 }

@@ -24,12 +24,14 @@ namespace ProductManagementAPP.Controllers
             if (user == null)
                 return Challenge();
 
+            var userId = user.Id;
             var userName = user.UserName;
             ViewData["UserName"] = userName;
 
-            var categories = await _categoriesService.GetAllCategoriesAsync();
+            var categories = await _categoriesService.GetAllCategoriesAsync(userId);
             return View(categories);
         }
+
 
         public async Task<IActionResult> Create()
         {
@@ -96,6 +98,10 @@ namespace ProductManagementAPP.Controllers
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
+                    var userId = user?.Id;
+                    var userName = user?.UserName ?? "Guest";
+
                     var category = await _categoriesService.GetCategoryByIdAsync(viewModel.CategoryId);
                     if (category == null)
                     {
@@ -105,6 +111,8 @@ namespace ProductManagementAPP.Controllers
                     category.Name = viewModel.Name;
                     category.CategoryCode = viewModel.CategoryCode;
                     category.IsActive = viewModel.IsActive;
+                    category.DateCreated = DateTime.Now;
+                    category.CreatedBy = userId;
 
                     await _categoriesService.UpdateCategoryAsync(category);
                     return Json(new { success = true });

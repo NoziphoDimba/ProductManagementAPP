@@ -10,7 +10,7 @@ namespace ProductManagementAPP.Services
 {
     public interface IProductsService
     {
-        Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize);
+        Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize, string userId);
         Task<Product> GetProductByIdAsync(int id);
         Task<Product> AddProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
@@ -28,9 +28,10 @@ namespace ProductManagementAPP.Services
             _context = context;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
+        public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize, string userId)
         {
             return await _context.Products
+                .Where(p=>p.UserId==userId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

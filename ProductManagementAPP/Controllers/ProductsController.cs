@@ -30,10 +30,11 @@ namespace ProductManagementAPP.Controllers
             if (user == null)
                 return Challenge();
 
+            var userId = user.Id; 
             var userName = user.UserName;
             ViewData["UserName"] = userName;
 
-            var products = await _productsService.GetAllProductsAsync(pageNumber, pageSize);
+            var products = await _productsService.GetAllProductsAsync(pageNumber, pageSize, userId);
             return View(products);
         }
 
@@ -42,31 +43,30 @@ namespace ProductManagementAPP.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Challenge();
-
+            var userId = user.Id;
             var userName = user.UserName;
             ViewData["UserName"] = userName;
 
-            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync();
+            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync(userId);
             return View(new ProductViewModel());
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] ProductViewModel productViewModel, IFormFile? image)
         {
+            var user = await _userManager.GetUserAsync(User);
+            var userId = user.Id;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var user = await _userManager.GetUserAsync(User);
                     if (user == null)
                         return Challenge();
 
                     var userName = user.UserName;
                     ViewData["UserName"] = userName;
 
-                  
                     var product = new Product
                     {
                         Name = productViewModel.Name,
@@ -74,12 +74,11 @@ namespace ProductManagementAPP.Controllers
                         CategoryName = productViewModel.CategoryName,
                         Price = productViewModel.Price,
                         DateCreated = DateTime.Now,
-                        UserId = user.Id,
+                        UserId = userId,
                         CreatedBy = productViewModel.CreatedBy,
                         CategoryId = productViewModel.CategoryId
                     };
 
-                   
                     product.Category = await _categoriesService.GetCategoryByIdAsync(product.CategoryId);
 
                     if (image != null && image.Length > 0)
@@ -94,7 +93,7 @@ namespace ProductManagementAPP.Controllers
                     }
 
                     await _productsService.AddProductAsync(product);
-                   
+
                     return Json(new { success = true, message = "Success" });
                 }
                 catch (Exception ex)
@@ -111,82 +110,18 @@ namespace ProductManagementAPP.Controllers
                 }
             }
 
-            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync();
+            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync(userId);
             return View(productViewModel);
         }
-
-        public async Task<IActionResult> Edit(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetProduct(int productId)
         {
-            var product = await _productsService.GetProductByIdAsync(id);
+            var product = await _productsService.GetProductByIdAsync(productId);
             if (product == null)
             {
                 return NotFound();
             }
-
-            var productViewModel = new ProductViewModel
-            {
-                Name = product.Name,
-                Description = product.Description,
-                CategoryName = product.CategoryName,
-                Price = product.Price,
-                Image = product.Image,
-                DateCreated = product.DateCreated,
-                CreatedBy = product.CreatedBy,
-                CategoryId = product.CategoryId
-            };
-
-            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync();
-            return View(productViewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [FromForm] ProductViewModel productViewModel, IFormFile image)
-        {
-           
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var product = new Product
-                    {
-                        ProductId = id,
-                        Name = productViewModel.Name,
-                        Description = productViewModel.Description,
-                        CategoryName = productViewModel.CategoryName,
-                        Price = productViewModel.Price,
-                        DateCreated = productViewModel.DateCreated,
-                        CreatedBy = productViewModel.CreatedBy,
-                        CategoryId = productViewModel.CategoryId
-                    };
-
-                    if (image != null && image.Length > 0)
-                    {
-                        var fileName = Path.GetFileName(image.FileName);
-                        var filePath = Path.Combine("wwwroot/images/uploads", fileName);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await image.CopyToAsync(fileStream);
-                        }
-                        product.Image = fileName;
-                    }
-                    else
-                    {
-                        product.Image = productViewModel.Image; 
-                    }
-
-                    await _productsService.UpdateProductAsync(product);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, $"An error occurred while updating the product: {ex.Message}");
-                }
-            }
-
-            ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync();
-            return View(productViewModel);
+            return Json(product);
         }
 
         public async Task<IActionResult> GetCategory(int id)
@@ -243,5 +178,36 @@ namespace ProductManagementAPP.Controllers
             return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromForm] Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _productsService.UpdateProductAsync(product);
+                    return Json(new { success = true, message = "Product updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = $"An error occurred while updating the product: {ex.Message}" });
+                }
+            }
+            return Json(new { success = false, message = "Invalid model state. Please check your inputs." });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int productId)
+        {
+            try
+            {
+                await _productsService.DeleteProductAsync(productId);
+                return Json(new { success = true, message = "Product deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"An error occurred while deleting the product: {ex.Message}" });
+            }
+        }
     }
 }

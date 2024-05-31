@@ -9,7 +9,7 @@ namespace ProductManagementAPP.Services
 {
     public interface ICategoriesService
     {
-        Task<List<Category>> GetAllCategoriesAsync();
+        Task<List<Category>> GetAllCategoriesAsync(string userId);
         Task<Category> GetCategoryByIdAsync(int id);
         Task AddCategoryAsync(Category category, string userId, string createdBy);
         Task UpdateCategoryAsync(Category category);
@@ -25,10 +25,13 @@ namespace ProductManagementAPP.Services
             _context = context;
         }
 
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public async Task<List<Category>> GetAllCategoriesAsync(string userId)
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
         }
+
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {

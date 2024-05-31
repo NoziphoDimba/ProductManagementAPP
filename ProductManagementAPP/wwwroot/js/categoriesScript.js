@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $('#categoryForm').on('submit', function (event) {
         event.preventDefault();
 
@@ -15,7 +14,6 @@ $(document).ready(function () {
             processData: false,
             success: function (response) {
                 if (response.success) {
-                  
                     $('#successModal').modal('show');
                     window.location.href = '/Categories/Categories';
                 } else {
@@ -29,28 +27,28 @@ $(document).ready(function () {
         });
     });
 
-$('#editCategoryForm').on('submit', function (event) {
-    event.preventDefault();
-    var formData = $(this).serialize();
+    $('#editCategoryForm').on('submit', function (event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
 
-    $.ajax({
-        type: 'POST',
-        url: '/Categories/Edit',
-        data: formData,
-        success: function (response) {
-            if (response.success) {
-                $('#editCategoryModal').modal('hide');
-                $('#successModal').modal('show');
-            } else {
-                alert('Error updating category: ' + response.message);
+        $.ajax({
+            type: 'POST',
+            url: '/Categories/Edit',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    $('#editCategoryModal').modal('hide');
+                    $('#successModal').modal('show');
+                } else {
+                    alert('Error updating category: ' + response.message);
+                }
+            },
+            error: function (error) {
+                alert('Error updating category');
+                console.log(error);
             }
-        },
-        error: function (error) {
-            alert('Error updating category');
-            console.log(error);
-        }
+        });
     });
-});
 });
 
 function openEditModal(event, categoryId) {
@@ -83,6 +81,7 @@ function openEditModal(event, categoryId) {
 }
 
 function openDeleteModal(event, categoryId) {
+    debugger;
     event.preventDefault();
     $('#deleteModal').data('categoryId', categoryId).modal('show');
 }
