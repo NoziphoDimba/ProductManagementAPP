@@ -123,7 +123,7 @@ namespace ProductManagementAPP.Areas.Identity.Pages.Account
                     {
                         if (await _userManager.IsInRoleAsync(user, "User"))
                         {
-                            return LocalRedirect("~/Categories/Categories");
+                            return LocalRedirect("/Home/Index");
                         }
                     }
                     _logger.LogInformation("User logged in.");

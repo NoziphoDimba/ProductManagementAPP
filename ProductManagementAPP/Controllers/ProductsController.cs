@@ -9,6 +9,7 @@ using ProductManagementAPP.Models;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Identity;
 using ProductManagementAPP.ViewModels;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace ProductManagementAPP.Controllers
 {
@@ -113,34 +114,27 @@ namespace ProductManagementAPP.Controllers
             ViewBag.Categories = await _categoriesService.GetAllCategoriesAsync(userId);
             return View(productViewModel);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetProduct(int productId)
+       
+        public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await _productsService.GetProductByIdAsync(productId);
+            var product = await _productsService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
             return Json(product);
         }
-
-        public async Task<IActionResult> GetCategory(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
         {
-            var category = await _categoriesService.GetCategoryByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Challenge();
 
-            var categoryViewModel = new CategoryViewModel
-            {
-                CategoryId = category.CategoryId,
-                Name = category.Name,
-                CategoryCode = category.CategoryCode,
-                IsActive = category.IsActive
-            };
-
-            return Json(categoryViewModel);
+            var userId = user.Id;
+         
+            var categories = await _categoriesService.GetAllCategoriesAsync(userId);
+            return Json(categories);
         }
 
         [HttpPost]
@@ -179,13 +173,27 @@ namespace ProductManagementAPP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] Product product)
+        public async Task<IActionResult> Edit([FromForm] ProductViewModel productViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
+                    if (user == null)
+                        return Challenge();
+                    var userId = user.Id;
+                    var product = await _productsService.GetProductByIdAsync(productViewModel.ProductId);
+                    if (product == null)
+                    {
+                        return NotFound();
+                    }
+                   
+                   product.DateCreated = DateTime.Now;
+                    product.UserId = userId;
+
                     await _productsService.UpdateProductAsync(product);
+
                     return Json(new { success = true, message = "Product updated successfully." });
                 }
                 catch (Exception ex)
@@ -195,6 +203,7 @@ namespace ProductManagementAPP.Controllers
             }
             return Json(new { success = false, message = "Invalid model state. Please check your inputs." });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Delete(int productId)
@@ -209,5 +218,6 @@ namespace ProductManagementAPP.Controllers
                 return Json(new { success = false, message = $"An error occurred while deleting the product: {ex.Message}" });
             }
         }
+
     }
 }

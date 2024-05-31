@@ -17,6 +17,7 @@ namespace ProductManagementAPP.Services
         Task<bool> DeleteProductAsync(int productId);
         Task<bool> ProcessExcelFileAsync(Stream fileStream, int productId);
         Task<byte[]> GenerateExcelFileAsync(int productId);
+        Task<int> CountProducts(string id);
     }
 
     public class ProductsService : IProductsService
@@ -27,7 +28,10 @@ namespace ProductManagementAPP.Services
         {
             _context = context;
         }
-
+        public async Task<int> CountProducts(string id)
+        {
+            return await _context.Products.Where(p => p.UserId == id).CountAsync();
+        }
         public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize, string userId)
         {
             return await _context.Products
@@ -137,7 +141,7 @@ namespace ProductManagementAPP.Services
 
         public async Task<byte[]> GenerateExcelFileAsync(int productId)
         {
-            var products = await _context.Products.Where(p => p.CategoryId == productId).ToListAsync();
+            var products = await _context.Products.Where(p => p.ProductId == productId).ToListAsync();
 
             using (var package = new ExcelPackage())
             {

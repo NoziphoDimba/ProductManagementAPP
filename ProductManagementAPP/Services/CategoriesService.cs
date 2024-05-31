@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProductManagementAPP.Models;
@@ -14,6 +15,8 @@ namespace ProductManagementAPP.Services
         Task AddCategoryAsync(Category category, string userId, string createdBy);
         Task UpdateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int id);
+        Task<int> CountCategories(string id);
+       
     }
 
     public class CategoriesService : ICategoriesService
@@ -24,7 +27,11 @@ namespace ProductManagementAPP.Services
         {
             _context = context;
         }
-
+     
+        public async Task<int> CountCategories(string id)
+        {
+            return await _context.Categories.Where(p => p.UserId == id).CountAsync();
+        }
         public async Task<List<Category>> GetAllCategoriesAsync(string userId)
         {
             return await _context.Categories
